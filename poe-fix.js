@@ -3,9 +3,9 @@
 // @name:en      Poe Enlarge chat box And auto set focus to input box.
 // @name:zh-CN   Poe扩大聊天框，自动设置输入框焦点
 // @namespace    http://tampermonkey.net/
-// @version      0.7.0
-// @description:en  Features: 1. Enlarge chat box. 2. Auto set focus to input box. Note: Due to poe.com's constant updates, features may become invalid. The author will follow up with updates.
-// @description:zh-CN  功能：1. 扩大聊天框。2. 自动设置输入框焦点。说明：由于poe.com在不断的更新，功能可能会失效。作者会跟进更新。
+// @version      0.7.2
+// @description:en  Features: 1. Enlarge chat box. 2. Auto set focus to input box. Note: Due to poe.com's constant updates, features may become invalid. The author will follow up with updates. Welcome for PR of https://github.com/hxy91819/poe-tampermonkey.
+// @description:zh-CN  功能：1. 扩大聊天框。2. 自动设置输入框焦点。说明：由于poe.com在不断的更新，功能可能会失效。作者会跟进更新。欢迎提PR：https://github.com/hxy91819/poe-tampermonkey
 // @author       Cursor & Mason
 // @match        *://poe.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=poe.com
