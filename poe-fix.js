@@ -16,6 +16,33 @@
 (function () {
     'use strict';
 
+    /** Function 1: Enlarges the chat box */
+    enlargeChatBox();
+    /** Function 2: Automatically moves the focus to the chat input box when the user types or click button. (Has Problem with Chinese Input) */
+    setChatInputFocus();
+
+    /** Function 1.1: 添加监听器，以应对动态加载：处理切换页面的时候，重新设定大小 */
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
+                enlargeChatBox();
+            }
+        });
+    });
+    observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['href'] });
+
+    /** Function 1.2: 添加监听器，以应对动态加载：处理气泡的大小问题 */
+    const bubbleObserver = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0 && Array.from(mutation.target.classList).some(className => className.startsWith('ChatMessagesView_messagePair'))) {
+                // console.log(mutation)
+                removeMessageBubbleMaxWidth();
+            }
+        });
+    });
+    bubbleObserver.observe(document.body, { childList: true, subtree: true });
+
+    /** 移除消息气泡的最大宽度 */
     function removeMessageBubbleMaxWidth() {
         console.log("removeMessageBubbleMaxWidth!")
         // Find all div elements with class starting with Message_botMessageBubble
@@ -31,8 +58,7 @@
             messageBubble.style.setProperty('max-width', 'unset', 'important');
         });
     }
-
-    /** Function 1: Enlarges the chat box */
+    /** 移除聊天窗口的最大宽度 */
     function enlargeChatBox() {
         console.log("enlargeChatBox!")
         // Get all sections with class has prefix 'PageWithSidebarLayout_mainSection'
@@ -54,12 +80,7 @@
             messageView.style.setProperty('max-width', 'unset', 'important');
         });
     }
-
-    // Call the function whenever needed
-    enlargeChatBox();
-
-
-    /** Function 2: Automatically moves the focus to the chat input box when the user types or click button. (Has Problem with Chinese Input) */
+    /** 设置输入框的焦点 */
     function setChatInputFocus() {
         function checkCredits() {
             // Find the div element with class starting with ChatMessageSendButton_noFreeMessageTooltip
@@ -110,29 +131,5 @@
             chatInput.focus();
         });
     }
-
-    setChatInputFocus();
-
-    /** Function 1.1: 处理切换页面的时候，重新设定大小 */
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
-                enlargeChatBox();
-            }
-        });
-    });
-    observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['href'] });
-
-    /** Function 1.2: 处理气泡的大小问题 */
-    const bubbleObserver = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.type === 'childList' && mutation.addedNodes.length > 0 && Array.from(mutation.target.classList).some(className => className.startsWith('ChatMessagesView_messagePair'))) {
-                // console.log(mutation)
-                removeMessageBubbleMaxWidth();
-            }
-        });
-    });
-    bubbleObserver.observe(document.body, { childList: true, subtree: true });
-
 })();
 
