@@ -82,6 +82,8 @@
     }
     /** 设置输入框的焦点 */
     function setChatInputFocus() {
+
+        // 判断有没有免费机会使用，避免设置焦点的时候导致弹框。
         function checkCredits() {
             // Find the div element with class starting with ChatMessageSendButton_noFreeMessageTooltip
             const chatMessageSendButton = document.querySelector('div[class^="ChatMessageSendButton_noFreeMessageTooltip"]');
