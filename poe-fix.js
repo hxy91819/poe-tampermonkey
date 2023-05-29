@@ -1,25 +1,31 @@
 // ==UserScript==
-// @name         Poe enlarge chat box And auto set focus to input box.
-// @name:en      Poe enlarge chat box And auto set focus to input box.
-// @name:zh-CN   Poe 扩大聊天框，自动设置输入框焦点
+// @name         Poe enlarge chat box, auto set focus to input box and toggles (show/hide) the left sidebar 
+// @name:en      Poe enlarge chat box, auto set focus to input box and toggles (show/hide) the left sidebar
+// @name:zh-CN   Poe 扩大聊天框，自动设置输入框焦点，隐藏侧边栏
 // @namespace    http://tampermonkey.net/
-// @version      0.7.3
-// @description:en  Features: 1. Enlarge chat box. 2. Auto set focus to input box. Note: Due to poe.com's constant updates, features may become invalid. The author will follow up with updates. Welcome for PR of https://github.com/hxy91819/poe-tampermonkey.
-// @description:zh-CN  功能：1. 扩大聊天框。2. 自动设置输入框焦点。说明：由于poe.com在不断的更新，功能可能会失效。作者会跟进更新。欢迎提PR：https://github.com/hxy91819/poe-tampermonkey
+// @version      0.8.0
+// @description:en  Features: 1. Enlarge chat box. 2. Auto set focus to input box. 3. toggles (show/hide) the left sidebar. 
+// @description:zh-CN  功能：1. 扩大聊天框。2. 自动设置输入框焦点。3. 切换显示侧边栏的显示和隐藏。
 // @author       Cursor & Mason
 // @match        *://poe.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=poe.com
-// @grant        none
+// @grant        GM.registerMenuCommand
+// @grant        GM.setValue
+// @grant        GM.getValue
 // @license      MIT
+// @supportURL   https://github.com/hxy91819/poe-tampermonkey
+// @homepageURL  https://github.com/hxy91819/poe-tampermonkey
 // ==/UserScript==
 
-(function () {
+(async function () {
     'use strict';
 
     /** Function 1: Enlarges the chat box */
     enlargeChatBox();
     /** Function 2: Automatically moves the focus to the chat input box when the user types or click button. (Has Problem with Chinese Input) */
     setChatInputFocus();
+    /** Function 3: toggles (show/hide) the left sidebar */
+    GM.registerMenuCommand('toggles (show/hide) the left sidebar', toggleShowHideTheLeftSidebarFeatures);
 
     /** Function 1.1: 添加监听器，以应对动态加载：处理切换页面的时候，重新设定大小 */
     const observer = new MutationObserver(function (mutations) {
@@ -131,6 +137,45 @@
                 return;
             }
             chatInput.focus();
+        });
+    }
+
+    /** 启用禁用显示侧边栏 */
+    let isLeftSideBarShow = await GM.getValue('isLeftSideBarShow', true);
+    console.log('isLeftSideBarShow: ' + isLeftSideBarShow);
+    // 初始化的时候，需要根据存储的设置显示
+    if (!isLeftSideBarShow) {
+        hideTheLeftSidebar();
+    }
+    async function toggleShowHideTheLeftSidebarFeatures() {
+        if (isLeftSideBarShow) {
+            hideTheLeftSidebar();
+        } else {
+            showTheLeftSidebar();
+        }
+        isLeftSideBarShow = !isLeftSideBarShow;
+        await GM.setValue('isLeftSideBarShow', isLeftSideBarShow);
+    }
+
+    /** 隐藏侧边栏 */
+    function hideTheLeftSidebar() {
+        // Get all sections with class has prefix 'PageWithSidebarLayout_mainSection'
+        const sections = document.querySelectorAll('[class^="PageWithSidebarLayout_leftSidebar"]');
+        // Loop through each section and remove the width and max-width properties
+        sections.forEach(section => {
+            // make it important to prevent modify
+            section.style.setProperty('display', 'none', 'important');
+        });
+    }
+
+    /** 显示侧边栏 */
+    function showTheLeftSidebar() {
+        // Get all sections with class has prefix 'PageWithSidebarLayout_mainSection'
+        const sections = document.querySelectorAll('[class^="PageWithSidebarLayout_leftSidebar"]');
+        // Loop through each section and remove the width and max-width properties
+        sections.forEach(section => {
+            // make it important to prevent modify
+            section.style.setProperty('display', 'inline');
         });
     }
 })();
