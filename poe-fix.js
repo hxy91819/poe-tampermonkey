@@ -27,7 +27,7 @@
     /** Function 3: toggles (show/hide) the left sidebar */
     GM.registerMenuCommand('toggles (show/hide) the left sidebar', toggleShowHideTheLeftSidebarFeatures);
 
-    /** Function 1.1: 添加监听器，以应对动态加载：处理切换页面的时候，重新设定大小 */
+    /** Function 1.1: Add a listener to handle dynamic loading: resize when switching pages */
     const observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
@@ -37,7 +37,7 @@
     });
     observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['href'] });
 
-    /** Function 1.2: 添加监听器，以应对动态加载：处理气泡的大小问题 */
+    /** Function 1.2: Add a listener to handle dynamic loading: resize message bubbles */
     const bubbleObserver = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0 && Array.from(mutation.target.classList).some(className => className.startsWith('ChatMessagesView_messagePair'))) {
@@ -48,7 +48,7 @@
     });
     bubbleObserver.observe(document.body, { childList: true, subtree: true });
 
-    /** 移除消息气泡的最大宽度 */
+    /** Remove the maximum width of message bubbles */
     function removeMessageBubbleMaxWidth() {
         console.log("removeMessageBubbleMaxWidth!")
         // Find all div elements with class starting with Message_botMessageBubble
@@ -64,7 +64,7 @@
             messageBubble.style.setProperty('max-width', 'unset', 'important');
         });
     }
-    /** 移除聊天窗口的最大宽度 */
+    /** Remove the maximum width of message bubbles */
     function enlargeChatBox() {
         console.log("enlargeChatBox!")
         // Get all sections with class has prefix 'PageWithSidebarLayout_mainSection'
@@ -77,7 +77,7 @@
             section.style.setProperty('min-width', '684px', 'important');
         });
 
-        // 移除消息气泡的最大宽度
+        // Remove the maximum width of message bubbles
         removeMessageBubbleMaxWidth();
 
         const chatMessagesViews = document.querySelectorAll('div[class^="ChatMessagesView_emptyView"]');
@@ -86,10 +86,11 @@
             messageView.style.setProperty('max-width', 'unset', 'important');
         });
     }
-    /** 设置输入框的焦点 */
+
+    /** Set the focus of the input box */
     function setChatInputFocus() {
 
-        // 判断有没有免费机会使用，避免设置焦点的时候导致弹框。
+        // Check if there are any free opportunities to use to avoid setting focus causing pop-ups.
         function checkCredits() {
             // Find the div element with class starting with ChatMessageSendButton_noFreeMessageTooltip
             const chatMessageSendButton = document.querySelector('div[class^="ChatMessageSendButton_noFreeMessageTooltip"]');
@@ -140,10 +141,11 @@
         });
     }
 
-    /** 启用禁用显示侧边栏 */
+
+    /** Toggle show/hide the left sidebar */
     let isLeftSideBarShow = await GM.getValue('isLeftSideBarShow', true);
     console.log('isLeftSideBarShow: ' + isLeftSideBarShow);
-    // 初始化的时候，需要根据存储的设置显示
+    // Show or hide the left sidebar based on the stored setting
     if (!isLeftSideBarShow) {
         hideTheLeftSidebar();
     }
@@ -157,18 +159,18 @@
         await GM.setValue('isLeftSideBarShow', isLeftSideBarShow);
     }
 
-    /** 隐藏侧边栏 */
+    /** Hide the left sidebar */
     function hideTheLeftSidebar() {
         // Get all sections with class has prefix 'PageWithSidebarLayout_mainSection'
         const sections = document.querySelectorAll('[class^="PageWithSidebarLayout_leftSidebar"]');
-        // Loop through each section and remove the width and max-width properties
+        // Loop through each section and set the display property to none
         sections.forEach(section => {
-            // make it important to prevent modify
+            // make it important to prevent modification
             section.style.setProperty('display', 'none', 'important');
         });
     }
 
-    /** 显示侧边栏 */
+    /** Show the left sidebar */
     function showTheLeftSidebar() {
         // Get all sections with class has prefix 'PageWithSidebarLayout_mainSection'
         const sections = document.querySelectorAll('[class^="PageWithSidebarLayout_leftSidebar"]');
